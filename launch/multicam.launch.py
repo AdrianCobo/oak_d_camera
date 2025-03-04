@@ -36,12 +36,14 @@ def generate_launch_description():
     subpixel        = LaunchConfiguration('subpixel',       default = True)
     confidence      = LaunchConfiguration('confidence',     default = 200)
     LRchecktresh    = LaunchConfiguration('LRchecktresh',   default = 5)
-    use_rviz        = LaunchConfiguration('use_rviz',       default = True)
+    use_rviz        = LaunchConfiguration('use_rviz',       default = False)
 
-    #cam1_id        = LaunchConfiguration('cam1_id',       default = 'f')  # if you change f to false python use bool instead of string (xd)
-    cam1_id        = LaunchConfiguration('cam1_id',       default = '1844301031FACA0F00') # middle camera
-    cam2_id        = LaunchConfiguration('cam2_id',       default = '18443010E1A7C90F00')
-    cam3_id        = LaunchConfiguration('cam3_id',       default = '18443010419EC90F00') # right cam
+    cam1_id        = LaunchConfiguration('cam1_id',       default = '18443010E1A7C90F00') # middle camera
+    cam2_id        = LaunchConfiguration('cam2_id',       default = '19443010319EF71200') # left-center camera
+    cam3_id        = LaunchConfiguration('cam3_id',       default = '1844301031BCEB0F00') # right-center camera
+    cam4_id        = LaunchConfiguration('cam4_id',       default = '1844301031B9EB0F00') # left camera
+    cam5_id        = LaunchConfiguration('cam5_id',       default = '18443010D149EC0F00') # right camera
+
 
     declare_camera_model_cmd = DeclareLaunchArgument(
         'camera_model',
@@ -146,6 +148,16 @@ def generate_launch_description():
     declare_cam3_id_cmd = DeclareLaunchArgument(
         'cam3_id',
         default_value=cam3_id,
+        description='serach for cam with required id')
+
+    declare_cam4_id_cmd = DeclareLaunchArgument(
+        'cam4_id',
+        default_value=cam4_id,
+        description='serach for cam with required id')
+
+    declare_cam5_id_cmd = DeclareLaunchArgument(
+        'cam5_id',
+        default_value=cam5_id,
         description='serach for cam with required id')
 
     urdf_launch1 = IncludeLaunchDescription(
@@ -259,12 +271,41 @@ def generate_launch_description():
                         {'LRchecktresh': LRchecktresh},
                         {'mode': 'depth'},
                         {'monoResolution': '400p'},
-                        {'cam_id': cam3_id}])
+                        {'cam_id': cam4_id}])
+
+    urdf_launch5 = IncludeLaunchDescription(
+                            launch_description_sources.PythonLaunchDescriptionSource(
+                                    os.path.join(urdf_launch_dir, 'urdf_launch.py')),
+                            launch_arguments={'tf_prefix' : 'oak5',
+                                              'camera_model': camera_model,
+                                              'base_frame'  : 'oak5-d_frame',
+                                              'parent_frame': 'oak5-d-base-frame',
+                                              'cam_pos_x'   : cam_pos_x,
+                                              'cam_pos_y'   : cam_pos_y,
+                                              'cam_pos_z'   : cam_pos_z,
+                                              'cam_roll'    : cam_roll,
+                                              'cam_pitch'   : cam_pitch,
+                                              'cam_yaw'     : cam_yaw}.items())
+
+    rgbd_stereo_node5 = launch_ros.actions.Node(
+            package='oak_d_camera', executable='stereo_publisher',
+            output='screen',
+            namespace='c5',
+            parameters=[{'tf_prefix': 'oak5'},
+                        {'lrcheck': lrcheck},
+                        {'extended': extended},
+                        {'subpixel': subpixel},
+                        {'confidence': confidence},
+                        {'LRchecktresh': LRchecktresh},
+                        {'mode': 'depth'},
+                        {'monoResolution': '400p'},
+                        {'cam_id': cam5_id}])
 
     #delayed_rgbd_stereo_node2 = RegisterEventHandler(OnProcessStart(target_action=rgbd_stereo_node,on_start=[LogInfo(msg='Turtlesim started, spawning turtle'),rgbd_stereo_node2]))
-    delayed_rgbd_stereo_node2 = TimerAction(period=7.0, actions=[rgbd_stereo_node2])
-    delayed_rgbd_stereo_node3 = TimerAction(period=14.0, actions=[rgbd_stereo_node3])
-    delayed_rgbd_stereo_node4 = TimerAction(period=21.0, actions=[rgbd_stereo_node4])
+    delayed_rgbd_stereo_node2 = TimerAction(period=3.0, actions=[rgbd_stereo_node2])
+    delayed_rgbd_stereo_node3 = TimerAction(period=6.0, actions=[rgbd_stereo_node3])
+    delayed_rgbd_stereo_node4 = TimerAction(period=9.0, actions=[rgbd_stereo_node4])
+    delayed_rgbd_stereo_node5 = TimerAction(period=12.0, actions=[rgbd_stereo_node5])
 
     rviz_node = launch_ros.actions.Node(
             package='rviz2', executable='rviz2', output='screen',
@@ -297,6 +338,8 @@ def generate_launch_description():
     ld.add_action(declare_cam1_id_cmd)
     ld.add_action(declare_cam2_id_cmd)
     ld.add_action(declare_cam3_id_cmd)
+    ld.add_action(declare_cam4_id_cmd)
+    ld.add_action(declare_cam5_id_cmd)
 
 
     ld.add_action(urdf_launch1)
@@ -305,8 +348,10 @@ def generate_launch_description():
     ld.add_action(delayed_rgbd_stereo_node2)
     ld.add_action(urdf_launch3)
     ld.add_action(delayed_rgbd_stereo_node3)
-    # ld.add_action(urdf_launch4)
-    # ld.add_action(delayed_rgbd_stereo_node4)
+    ld.add_action(urdf_launch4)
+    ld.add_action(delayed_rgbd_stereo_node4)
+    ld.add_action(urdf_launch5)
+    ld.add_action(delayed_rgbd_stereo_node5)
     ld.add_action(rviz_node)
 
     return ld
