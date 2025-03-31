@@ -69,12 +69,15 @@ std::tuple<dai::Pipeline, int, int> createPipeline(
     monoRight->setBoardSocket(dai::CameraBoardSocket::CAM_C);
 
     // StereoDepth
+    stereo->setDefaultProfilePreset(dai::node::StereoDepth::PresetMode::HIGH_DENSITY);
     stereo->initialConfig.setConfidenceThreshold(confidence);
     stereo->setRectifyEdgeFillColor(0);  // black, to better see the cutout
     stereo->initialConfig.setLeftRightCheckThreshold(LRchecktresh);
     stereo->setLeftRightCheck(lrcheck);
     stereo->setExtendedDisparity(extended);
     stereo->setSubpixel(subpixel);
+    stereo->initialConfig.setMedianFilter(dai::MedianFilter::KERNEL_7x7);
+    stereo->setSubpixelFractionalBits(3);
     monoLeft->setFps(120);
     monoRight->setFps(120);
 

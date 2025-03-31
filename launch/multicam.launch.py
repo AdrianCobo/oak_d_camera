@@ -34,7 +34,7 @@ def generate_launch_description():
     lrcheck         = LaunchConfiguration('lrcheck',        default = True)
     extended        = LaunchConfiguration('extended',       default = False)
     subpixel        = LaunchConfiguration('subpixel',       default = True)
-    confidence      = LaunchConfiguration('confidence',     default = 200)
+    confidence      = LaunchConfiguration('confidence',     default = 100) # el que mejor ha salido ha sido 50
     LRchecktresh    = LaunchConfiguration('LRchecktresh',   default = 5)
     use_rviz        = LaunchConfiguration('use_rviz',       default = False)
 
