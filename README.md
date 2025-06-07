@@ -35,11 +35,8 @@ source install/setup.bash
 ## 🗂️ Estructura relevante del repositorio
 
 ```bash
-computer_vision/
-├── include/
-│   ├── DepthSync.hpp                  # Genera la nube de puntos del sistema usando imágenes de disparidad sincronizadas
-│   ├── PlcSyncIcp.hpp                # ICP usando imágenes de disparidad
-│   ├── PlcSyncIcppclfrompcd.hpp      # ICP usando archivos .pcd
-│   ├── PlcSyncIcppcl.hpp             # ICP en tiempo real desde topics de ROS 2
+oak_d_camera/
+├── src/
+│   ├── stereo_publisher.cpp          # Configura la cámara OAK-D
 │
 ├── launch/                           # Launchers para facilitar el uso del código anterior
