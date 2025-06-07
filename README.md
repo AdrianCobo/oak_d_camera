@@ -1,4 +1,4 @@
-# 🧠 computer_vision
+# 🧠 oak_d_camera
 
 [![ROS 2 Humble](https://img.shields.io/badge/ROS2-Humble-blue)](https://docs.ros.org/en/humble/)
 ![distro](https://img.shields.io/badge/ROS2-Jazzy-blue)
